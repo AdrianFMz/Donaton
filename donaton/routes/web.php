@@ -27,6 +27,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\CauseController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\MercadoPagoController;
+use App\Http\Controllers\PayPalController;
 //use App\Http\Controllers\MercadoPagoWebhookController;
 
 
@@ -55,8 +56,12 @@ Route::get('/contacto', [PageController::class, 'contactoForm'])->name('contacto
 
 Route::middleware(['auth'])->group(function () {
 
-Route::post('/mercadopago/sync/{donation}', [MercadoPagoController::class, 'sync'])
-    ->name('mp.sync');
+    Route::post('/donar/{slug}/paypal', [PayPalController::class, 'start'])->name('paypal.start');
+    Route::get('/paypal/return', [PayPalController::class, 'return'])->name('paypal.return');
+    Route::get('/paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+
+    Route::post('/mercadopago/sync/{donation}', [MercadoPagoController::class, 'sync'])
+        ->name('mp.sync');
 
     Route::post('/donar/{slug}/mercadopago', [MercadoPagoController::class, 'start'])->name('mp.start');
     Route::get('/mercadopago/return/{result}', [MercadoPagoController::class, 'returnPage'])

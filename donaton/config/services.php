@@ -39,6 +39,13 @@ return [
     'access_token' => env('MP_ACCESS_TOKEN'),
     'use_sandbox' => (bool) env('MP_USE_SANDBOX', true),
     'notification_url' => env('MP_NOTIFICATION_URL'), // opcional
-],
+    ],
+
+    'paypal' => [
+    'mode' => env('PAYPAL_MODE', 'sandbox'),
+    'client_id' => env('PAYPAL_CLIENT_ID'),
+    'client_secret' => env('PAYPAL_CLIENT_SECRET'),
+    'currency' => env('PAYPAL_CURRENCY', 'MXN'),
+    ],
 
 ];
