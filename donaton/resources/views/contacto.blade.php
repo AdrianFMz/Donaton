@@ -24,6 +24,13 @@
         </div>
 
         <div>
+          <label class="text-sm text-slate-200">Asunto (opcional)</label>
+          <input name="asunto" value="{{ old('asunto') }}"
+                class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 outline-none focus:border-indigo-400" />
+          @error('asunto') <div class="mt-1 text-xs text-rose-300">{{ $message }}</div> @enderror
+        </div>
+
+        <div>
           <label class="text-sm text-slate-200">Mensaje</label>
           <textarea name="mensaje" rows="5"
             class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 outline-none focus:border-indigo-400">{{ old('mensaje') }}</textarea>

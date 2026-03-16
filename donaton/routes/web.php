@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CauseController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\MercadoPagoController;
+//use App\Http\Controllers\MercadoPagoWebhookController;
 
 
 Route::get('/', [PageController::class, 'landing'])->name('landing');
@@ -44,10 +46,22 @@ Route::get('/dashboard', function () {
     return redirect()->route('causas.index');
 })->middleware(['auth'])->name('dashboard');
 
+Route::post('/contacto', [PageController::class, 'contactoSend'])
+    ->middleware('throttle:10,1')
+    ->name('contacto.send');
+
 Route::get('/contacto', [PageController::class, 'contactoForm'])->name('contacto.form');
-Route::post('/contacto', [PageController::class, 'contactoSend'])->name('contacto.send');
+
 
 Route::middleware(['auth'])->group(function () {
+
+Route::post('/mercadopago/sync/{donation}', [MercadoPagoController::class, 'sync'])
+    ->name('mp.sync');
+
+    Route::post('/donar/{slug}/mercadopago', [MercadoPagoController::class, 'start'])->name('mp.start');
+    Route::get('/mercadopago/return/{result}', [MercadoPagoController::class, 'returnPage'])
+    ->whereIn('result', ['success', 'pending', 'failure'])
+    ->name('mp.return');
 
     Route::get('/mis-donativos', [DonationController::class, 'mine'])->name('donaciones.mine');
     Route::get('/donar/{slug}', [DonationController::class, 'create'])->name('donaciones.create');
@@ -57,5 +71,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/causas/{slug}', [CauseController::class, 'show'])->name('causas.show');
 
 });
-
+/*
+Route::post('/webhooks/mercadopago', [MercadoPagoWebhookController::class, 'handle'])
+    ->middleware('throttle:60,1')
+    ->name('mp.webhook');
+*/
 require __DIR__.'/auth.php';

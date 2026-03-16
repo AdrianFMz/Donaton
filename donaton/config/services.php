@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'mercadopago' => [
+    'access_token' => env('MP_ACCESS_TOKEN'),
+    'use_sandbox' => (bool) env('MP_USE_SANDBOX', true),
+    'notification_url' => env('MP_NOTIFICATION_URL'), // opcional
+],
+
 ];

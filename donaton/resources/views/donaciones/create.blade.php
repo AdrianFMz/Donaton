@@ -41,9 +41,11 @@
             <span x-show="submitting" x-cloak>Enviando...</span>
           </button>
 
-          <button type="button"
-            class="w-full rounded-xl bg-sky-500 px-5 py-3 text-sm font-semibold text-white hover:bg-sky-400">
-            Donar con Mercado Pago (próximamente)
+          <button type="submit"
+            formaction="{{ route('mp.start', $cause->slug) }}"
+            :disabled="submitting"
+            class="w-full rounded-xl bg-sky-500 px-5 py-3 text-sm font-semibold text-white hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed">
+            Donar con Mercado Pago
           </button>
           <button type="button"
             class="w-full rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold hover:bg-white/15">

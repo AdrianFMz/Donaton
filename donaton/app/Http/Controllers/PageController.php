@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreContactMessageRequest;
+use App\Models\ContactMessage;
+use Illuminate\Support\Facades\Mail;
+
 
 class PageController extends Controller
 {
@@ -16,17 +19,42 @@ class PageController extends Controller
         return view('contacto');
     }
 
-    // Sprint 0: solo valida y regresa mensaje (luego lo conectamos a Gmail y BD)
-    public function contactoSend(Request $request)
+    
+    public function contactoSend(StoreContactMessageRequest $request)
     {
-        $data = $request->validate([
-            'nombre' => ['required', 'string', 'min:2', 'max:80'],
-            'email'  => ['required', 'email', 'max:120'],
-            'mensaje'=> ['required', 'string', 'min:10', 'max:800'],
+        $contact = ContactMessage::create([
+            'name' => $request->input('nombre'),
+            'email' => $request->input('email'),
+            'subject' => $request->input('asunto'),
+            'message' => $request->input('mensaje'),
+            'status' => 'new',
         ]);
 
-        // Aquí en Sprint 0 NO enviamos correo aún.
-        // Solo confirmamos al usuario:
-        return back()->with('success', '¡Gracias! Tu mensaje fue recibido. Te contactaremos pronto.');
+        // Opcional: enviar correo (si ya configuraste MAIL_* en .env)
+        try {
+            $to = config('adrian.fuentez.2017@gmail.com'); // o tu correo destino fijo
+            if ($to) {
+                Mail::raw(
+                    "Nuevo mensaje de contacto:\n\n".
+                    "Nombre: {$contact->name}\n".
+                    "Email: {$contact->email}\n".
+                    "Asunto: ".($contact->subject ?? '-')."\n\n".
+                    "Mensaje:\n{$contact->message}\n\n".
+                    "ID: {$contact->id}\n",
+                    function ($message) use ($to, $contact) {
+                        $message->to($to)
+                            ->subject('DONATON - Nuevo mensaje de contacto');
+                    }
+                );
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Mail failed', ['error' => $e->getMessage()]);
+             return back()->with('error', 'Se guardó tu mensaje, pero falló el envío de correo. Revisa el log.');
+        }
+
+        return back()->with('success', '¡Gracias! Tu mensaje fue enviado correctamente.');
     }
+
+    
+
 }

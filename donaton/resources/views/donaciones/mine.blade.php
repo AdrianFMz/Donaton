@@ -53,6 +53,16 @@
                 };
                 @endphp
 
+                @if(strtolower($d->status) === 'pending')
+                    <form method="POST" action="{{ route('mp.sync', $d->id) }}" class="mt-3">
+                        @csrf
+                        <button type="submit"
+                        class="rounded-xl bg-white/10 px-4 py-2 text-xs font-semibold hover:bg-white/15">
+                        Verificar pago (local)
+                        </button>
+                    </form>
+                @endif
+
                 <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
                 <span class="inline-flex items-center rounded-full border px-2.5 py-1 {{ $statusClasses }}">
                     {{ $statusLabel }}
@@ -72,7 +82,7 @@
                 </div>
                 </div>
 
-                
+
               @if($d->message)
                 <div class="mt-2 text-sm text-slate-300">“{{ $d->message }}”</div>
               @endif
