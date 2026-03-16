@@ -14,8 +14,28 @@
 
         <div class="relative">
           <div class="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-            <div class="aspect-video bg-white/5 transition duration-300 group-hover:scale-105 group-hover:opacity-90"></div>
-            <div class="p-3 text-xs text-slate-300">*Imagen de {{ $cause->title }}</div>
+            @php
+              $base = "images/causes/{$cause->slug}/cover";
+              $extensions = ['png','jpg','jpeg','webp'];
+
+              $coverUrl = null;
+              foreach ($extensions as $ext) {
+                  $tryPath = "{$base}.{$ext}";
+                  if (file_exists(public_path($tryPath))) {
+                      $coverUrl = asset($tryPath);
+                      break;
+                  }
+              }
+
+              // fallback
+              if (!$coverUrl) {
+                  $coverUrl = asset('images/causes/placeholder.png');
+              }
+            @endphp
+
+            <img src="{{ $coverUrl }}"
+                alt="{{ $cause->title }}"
+                class="aspect-video w-full rounded-2xl object-cover transition duration-300 group-hover:scale-105 group-hover:opacity-90 ring-1 ring-white/10" />
           </div>
 
           <h2 class="text-lg font-semibold">{{ $cause->title }}</h2>

@@ -32,10 +32,10 @@
 
       {{-- Placeholder imagen hero --}}
       <div class="overflow-hidden rounded-3xl border border-white/10 bg-white/5">
-        <div class="aspect-video w-full bg-gradient-to-br from-indigo-500/20 via-white/5 to-emerald-500/10"></div>
-        <div class="p-4 text-xs text-slate-300">
-          *Aquí irá tu imagen principal (la pondrás manualmente).
-        </div>
+        <img src="{{ asset('images/ui/banner1.png') }}" 
+            class="aspect-video w-full rounded-3xl object-cover ring-1 ring-white/10"
+            alt="Donaciones">
+        
       </div>
     </div>
   </section>

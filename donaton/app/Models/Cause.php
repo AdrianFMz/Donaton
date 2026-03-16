@@ -11,6 +11,7 @@ class Cause extends Model
         'slug',
         'short_description',
         'problem_description',
+        'impact',
         'use_of_funds',
         'since_date',
         'is_active',

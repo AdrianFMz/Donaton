@@ -16,7 +16,7 @@
     <nav x-data="{ open:false, userOpen:false }" class="mx-auto max-w-6xl px-4 py-3">
       <div class="flex items-center justify-between gap-3">
         <a href="{{ route('landing') }}" class="flex items-center gap-3">
-          <div class="h-9 w-9 rounded-xl bg-white/10 ring-1 ring-white/15"></div>
+          <img src="{{ asset('images/ui/logo.png') }}" class="h-9 w-9 rounded-xl object-cover ring-1 ring-white/15" alt="DONATON">
           <div class="leading-tight">
             <div class="font-semibold tracking-wide">DONATON</div>
             <div class="text-xs text-slate-300">Plataforma de donativos</div>
@@ -73,7 +73,17 @@
                      class="block px-4 py-3 text-sm text-slate-200 hover:bg-white/10">
                     Dashboard Admin
                   </a>
+
+                  <a href="{{ route('admin.causes.index') }}"
+                    class="rounded-lg px-3 py-2 text-sm hover:bg-white/10 {{ request()->routeIs('admin.causes.*') ? 'bg-white/10' : '' }}">
+                    Admin Causas
+                  </a>
+
                 @endif
+
+                
+                  
+                
 
                 <div class="border-t border-white/10"></div>
 
@@ -122,7 +132,15 @@
             <a href="{{ route('admin.dashboard') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-white/10">
               Dashboard
             </a>
+
+            <a href="{{ route('admin.causes.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-white/10 {{ request()->routeIs('admin.causes.*') ? 'bg-white/10' : '' }}">
+              Admin Causas
+            </a>
           @endif
+
+          
+            
+          
 
           <div class="rounded-lg border border-white/10 bg-white/5 px-3 py-2">
             <div class="text-sm font-medium text-slate-100">{{ Auth::user()->name }}</div>
@@ -172,7 +190,7 @@
       <div></div>
 
       <div class="flex items-center justify-center gap-3">
-        <div class="h-10 w-10 rounded-2xl bg-white/10 ring-1 ring-white/15"></div>
+        <img src="{{ asset('images/ui/logo.png') }}" class="h-9 w-9 rounded-xl object-cover ring-1 ring-white/15" alt="DONATON">
         <div class="text-center">
           <div class="font-semibold">DONATON</div>
           <div class="text-xs text-slate-300">Gracias por apoyar ❤️</div>

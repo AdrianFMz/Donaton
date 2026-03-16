@@ -29,6 +29,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\MercadoPagoController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\CauseAdminController;
 
 //use App\Http\Controllers\MercadoPagoWebhookController;
 
@@ -38,6 +39,12 @@ Route::get('/', [PageController::class, 'landing'])->name('landing');
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'admin'])->name('admin.dashboard');
+
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/causas', [CauseAdminController::class, 'index'])->name('admin.causes.index');
+    Route::get('/causas/{cause}/edit', [CauseAdminController::class, 'edit'])->name('admin.causes.edit');
+    Route::put('/causas/{cause}', [CauseAdminController::class, 'update'])->name('admin.causes.update');
+});
 
 
 

@@ -34,12 +34,7 @@
         </div>
 
         <div class="grid gap-3">
-          <button type="submit"
-            :disabled="submitting"
-            class="w-full rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed">
-            <span x-show="!submitting">Registrar donativo (pendiente)</span>
-            <span x-show="submitting" x-cloak>Enviando...</span>
-          </button>
+          
 
           <button type="submit"
             formaction="{{ route('mp.start', $cause->slug) }}"
