@@ -20,4 +20,10 @@ class Cause extends Model
         'since_date' => 'date',
         'is_active' => 'boolean',
     ];
+
+    public function donations()
+    {
+    return $this->hasMany(\App\Models\Donation::class);
+    }
 }
+

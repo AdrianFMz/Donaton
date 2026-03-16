@@ -27,12 +27,12 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\CauseController;
 use App\Http\Controllers\DonationController;
 
+
 Route::get('/', [PageController::class, 'landing'])->name('landing');
 
 Route::get('/admin/dashboard', function () {
-    abort_unless(auth()->user()?->role === 'admin', 403);
     return view('admin.dashboard');
-})->middleware(['auth'])->name('admin.dashboard');
+})->middleware(['auth', 'admin'])->name('admin.dashboard');
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
@@ -48,15 +48,14 @@ Route::get('/contacto', [PageController::class, 'contactoForm'])->name('contacto
 Route::post('/contacto', [PageController::class, 'contactoSend'])->name('contacto.send');
 
 Route::middleware(['auth'])->group(function () {
-    
-    Route::get('/mis-donativos', function () {
-    return view('donaciones.mine'); // Sprint 1: solo UI
-})->name('donaciones.mine');
+
+    Route::get('/mis-donativos', [DonationController::class, 'mine'])->name('donaciones.mine');
+    Route::get('/donar/{slug}', [DonationController::class, 'create'])->name('donaciones.create');
+    Route::post('/donar/{slug}', [DonationController::class, 'store'])->name('donaciones.store');
 
     Route::get('/causas', [CauseController::class, 'index'])->name('causas.index');
     Route::get('/causas/{slug}', [CauseController::class, 'show'])->name('causas.show');
 
-    Route::get('/donar/{slug}', [DonationController::class, 'create'])->name('donaciones.create');
 });
 
 require __DIR__.'/auth.php';
