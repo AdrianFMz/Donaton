@@ -21,12 +21,17 @@
 
         <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
           <div class="text-sm font-semibold">¿Qué se hará con el dinero?</div>
-          <p class="mt-2 text-sm text-slate-300">
-            {{ $cause->use_of_funds ?? 'Aquí pondrás el plan de uso de fondos.' }}
-          </p>
-        </div>
-      </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div class="text-sm font-semibold">Impacto esperado</div>
+            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
+              <li>Beneficio directo a personas de la comunidad.</li>
+              <li>Transparencia en el uso de fondos.</li>
+              <li>Actualizaciones de avances (futuro módulo).</li>
+            </ul>
+          </div>
     </section>
+
+
 
     <aside class="space-y-4">
       <div class="rounded-3xl border border-white/10 bg-white/5 p-6">

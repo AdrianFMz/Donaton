@@ -48,6 +48,11 @@ Route::get('/contacto', [PageController::class, 'contactoForm'])->name('contacto
 Route::post('/contacto', [PageController::class, 'contactoSend'])->name('contacto.send');
 
 Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/mis-donativos', function () {
+    return view('donaciones.mine'); // Sprint 1: solo UI
+})->name('donaciones.mine');
+
     Route::get('/causas', [CauseController::class, 'index'])->name('causas.index');
     Route::get('/causas/{slug}', [CauseController::class, 'show'])->name('causas.show');
 

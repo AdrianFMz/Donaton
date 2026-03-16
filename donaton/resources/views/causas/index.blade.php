@@ -6,15 +6,15 @@
 
   <div class="mt-6 grid gap-4 md:grid-cols-3">
     @foreach($causes as $cause)
-      <a href="{{ route('causas.show', $cause->slug) }}"
-         class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 transition hover:scale-[1.02] hover:border-indigo-400/40">
+        <a href="{{ route('causas.show', $cause->slug) }}"
+          class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-indigo-400/50">
         <div class="absolute inset-0 opacity-0 transition group-hover:opacity-100">
           <div class="h-full w-full bg-gradient-to-br from-indigo-500/15 via-white/5 to-emerald-500/10"></div>
         </div>
 
         <div class="relative">
           <div class="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-            <div class="aspect-video bg-white/5"></div>
+            <div class="aspect-video bg-white/5 transition duration-300 group-hover:scale-105 group-hover:opacity-90"></div>
             <div class="p-3 text-xs text-slate-300">*Imagen de {{ $cause->title }}</div>
           </div>
 
