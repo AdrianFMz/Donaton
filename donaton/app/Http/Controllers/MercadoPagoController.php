@@ -132,70 +132,87 @@ class MercadoPagoController extends Controller
     }
 
     // ✅ Confirmación LOCAL (sin webhook): consulta payments/search por external_reference
-    public function sync(Donation $donation)
-    {
-        if ($donation->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
-            abort(403);
-        }
+        public function sync(Donation $donation)
+        {
+            if ($donation->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+                abort(403);
+            }
 
-        $token = (string) config('services.mercadopago.access_token');
-        if (!$token) {
-            return back()->with('error', 'Falta MP_ACCESS_TOKEN en .env');
-        }
+            $token = (string) config('services.mercadopago.access_token');
+            if (!$token) {
+                return back()->with('error', ' ERROR DE CONFIGURACIÓN.');
+            }
 
-        $res = Http::withToken($token)->get('https://api.mercadopago.com/v1/payments/search', [
-            'external_reference' => $donation->client_ref,
-            'sort' => 'date_created',
-            'criteria' => 'desc',
-            'limit' => 1,
-        ]);
-
-        if (!$res->ok()) {
-            return back()->with('error', 'No se pudo consultar MP (' . $res->status() . '): ' . $res->body());
-        }
-
-        $results = $res->json('results') ?? [];
-        if (count($results) === 0) {
-            return back()->with('error', 'Aún no hay pagos en Mercado Pago para este donativo.');
-        }
-
-        $mpPayment = $results[0];
-        $mpStatus = strtolower((string) ($mpPayment['status'] ?? ''));
-        $mpDetail = (string) ($mpPayment['status_detail'] ?? '');
-        $mpId = (string) ($mpPayment['id'] ?? '');
-
-        $donation->status = match ($mpStatus) {
-            'approved' => 'paid',
-            'rejected' => 'failed',
-            'cancelled' => 'cancelled',
-            default => 'pending',
-        };
-        $donation->save();
-
-        $payRow = Payment::query()
-            ->where('donation_id', $donation->id)
-            ->where('provider', 'mercadopago')
-            ->latest()
-            ->first();
-
-        if ($payRow) {
-            $payload = is_array($payRow->payload) ? $payRow->payload : [];
-            $payload['payment'] = $mpPayment;
-
-            $payRow->status = $mpStatus;
-            $payRow->provider_ref = $mpId ?: $payRow->provider_ref;
-            $payRow->payload = $payload;
-            $payRow->save();
-        } else {
-            Payment::create([
-                'donation_id' => $donation->id,
-                'provider' => 'mercadopago',
-                'provider_ref' => $mpId,
-                'status' => $mpStatus,
-                'payload' => ['payment' => $mpPayment],
+            $res = Http::withToken($token)->get('https://api.mercadopago.com/v1/payments/search', [
+                'external_reference' => $donation->client_ref,
+                'sort' => 'date_created',
+                'criteria' => 'desc',
+                'limit' => 1,
             ]);
-        }
 
-        return back()->with('success', "Estado MP: $mpStatus ($mpDetail)");
-    }
+            if (!$res->ok()) {
+                return back()->with('error', ' No se pudo consultar Mercado Pago. Intenta de nuevo más tarde.');
+            }
+
+            $results = $res->json('results') ?? [];
+            if (count($results) === 0) {
+                return back()->with('error', ' Aún no aparece el pago en Mercado Pago. Si acabas de pagar, espera unos segundos y vuelve a verificar.');
+            }
+
+            $mpPayment = $results[0];
+            $mpStatus = strtolower((string) ($mpPayment['status'] ?? ''));
+            $mpDetail = (string) ($mpPayment['status_detail'] ?? '');
+            $mpId = (string) ($mpPayment['id'] ?? '');
+
+            $donation->status = match ($mpStatus) {
+                'approved' => 'paid',
+                'rejected' => 'failed',
+                'cancelled' => 'cancelled',
+                default => 'pending',
+            };
+            $donation->save();
+
+            $payRow = Payment::query()
+                ->where('donation_id', $donation->id)
+                ->where('provider', 'mercadopago')
+                ->latest()
+                ->first();
+
+            if ($payRow) {
+                $payload = is_array($payRow->payload) ? $payRow->payload : [];
+                $payload['payment'] = $mpPayment;
+
+                $payRow->status = $mpStatus;
+                $payRow->provider_ref = $mpId ?: $payRow->provider_ref;
+                $payRow->payload = $payload;
+                $payRow->save();
+            } else {
+                Payment::create([
+                    'donation_id' => $donation->id,
+                    'provider' => 'mercadopago',
+                    'provider_ref' => $mpId,
+                    'status' => $mpStatus,
+                    'payload' => ['payment' => $mpPayment],
+                ]);
+            }
+
+            // Mensajes bonitos
+            $message = match ($mpStatus) {
+                'approved'   => '¡Donativo confirmado con Mercado Pago! Gracias por tu apoyo, lo agradecerán mucho!',
+                'pending'    => 'Tu pago está pendiente en Mercado Pago. Vuelve a verificar en unos momentos.',
+                'in_process' => 'Tu pago está en proceso. Vuelve a verificar en unos momentos.',
+                'rejected'   => 'Mercado Pago rechazó el pago. Intenta con otro método o revisa los datos del pago.',
+                'cancelled'  => 'Pago cancelado en Mercado Pago.',
+                default      => "ℹMercado Pago respondió: {$mpStatus}.",
+            };
+
+            if ($mpStatus === 'rejected' && $mpDetail) {
+                $message .= " (Detalle: {$mpDetail})";
+            }
+
+            // Tipo de alerta (en tu layout tienes success y error)
+            $flashType = ($mpStatus === 'approved') ? 'success' : 'error';
+
+            return back()->with($flashType, $message);
+        }
 }
