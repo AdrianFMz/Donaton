@@ -47,12 +47,14 @@
     <aside class="rounded-3xl border border-white/10 bg-white/5 p-8">
       <h2 class="text-lg font-semibold">Información</h2>
       <p class="mt-2 text-sm text-slate-300">
-        Este espacio es para que pongas datos reales después (correo, redes, ubicación, etc.).
+        Nos pondremos en contacto con la brevedad posible.
       </p>
 
       <div class="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <div class="aspect-video bg-gradient-to-br from-white/5 to-white/10"></div>
-        <div class="p-4 text-xs text-slate-300">*Placeholder para imagen/mapa.</div>
+            <img src="{{ asset('images/ui/contacto.png') }}"
+                alt="Contacto"
+                class="aspect-video w-full rounded-2xl object-cover transition duration-300 group-hover:scale-105 group-hover:opacity-90 ring-1 ring-white/10" />
+          </div>
       </div>
     </aside>
   </div>

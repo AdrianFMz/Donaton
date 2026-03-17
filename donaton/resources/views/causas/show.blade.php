@@ -123,8 +123,8 @@
 
     <div class="rounded-3xl border border-white/10 bg-white/5 p-6 md:col-span-2">
       <div class="text-sm font-semibold">¿Qué se hará con el dinero recaudado?</div>
-      <p class="mt-3 text-sm text-slate-300">
-        {!! nl2br(e($funds)) !!}
+      <p class="mt-3 text-sm text-slate-300 whitespace-pre-line">
+        {{ $funds ?: 'Aquí explica en qué se usará el dinero recaudado: apoyo directo, recursos, logística, campañas, etc. (Este texto se edita desde Admin Causas).' }}
       </p>
 
       <div class="mt-4 grid gap-3 md:grid-cols-3">
@@ -145,9 +145,9 @@
 
     <div class="rounded-3xl border border-white/10 bg-white/5 p-6 md:col-span-2">
       <div class="text-sm font-semibold">Impacto esperado</div>
-      <p class="mt-3 text-sm text-slate-300">
-        {!! nl2br(e($impact))!!}
-      </p>
+        <p class="mt-3 text-sm text-slate-300 whitespace-pre-line">
+          {{ $impact ?: 'Describe el impacto esperado: a cuántas personas ayudará, qué mejora se espera, y cómo se medirá el resultado. (Este texto se edita desde Admin Causas).' }}
+        </p>
     </div>
   </div>
 

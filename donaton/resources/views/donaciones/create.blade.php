@@ -55,12 +55,31 @@
     <aside class="rounded-3xl border border-white/10 bg-white/5 p-8">
       <div class="text-sm font-semibold">Resumen</div>
       <div class="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <div class="aspect-video bg-white/5"></div>
-        <div class="p-3 text-xs text-slate-300">*Imagen de la causa</div>
+        @php
+          $slug = $cause->slug;
+          $base = "images/causes/{$slug}/cover";
+          $extensions = ['png','jpg','jpeg','webp'];
+
+          $coverUrl = null;
+          foreach ($extensions as $ext) {
+            $try = "{$base}.{$ext}";
+            if (file_exists(public_path($try))) {
+              $coverUrl = asset($try);
+              break;
+            }
+          }
+          if (!$coverUrl) $coverUrl = asset('images/causes/placeholder.png');
+        @endphp
+
+        <div class="mb-5 overflow-hidden rounded-3xl border border-white/10 bg-white/5">
+          <img src="{{ $coverUrl }}"
+              alt="{{ $cause->title }}"
+              class="h-56 w-full object-cover md:h-64" />
+        </div>
       </div>
 
       <div class="mt-4 text-sm text-slate-300">
-        Tu donativo se usará para apoyar esta causa. En Sprint 3 haremos la confirmación real del pago.
+        Tu donativo se usará para apoyar esta causa. Agradecemos cualquier apoyo para su realización.
       </div>
     </aside>
   </div>
